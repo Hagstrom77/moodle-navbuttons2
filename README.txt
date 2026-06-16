@@ -1,4 +1,78 @@
-Navigation buttons (for Moodle 2.x)
+Navigation buttons (for Moodle 4.1+)
+
+This block has been originaly developed by Davo Smith. This is a fork with few minor upgrades:
+- changed default values ​​for the database in the file db/install.xml
+  - only home, previous and next buttons are turned on by default
+  - home button links to course homepage instead of site homepage
+- replaced icons in the pix directory with more suitable ones for Moodle Boost theme
+- modified footer.php: 
+  - automatically activates the buttons (with default settings) without the need to add a block to each course. By adding a block to the course, the buttons can still be turned off and settings can still be modified as     in the original plugin. 
+  - The home button is now in the middle instead on the left
+- If you include the following SCSS to your Moodle Boost theme settings, you will get additional look and feel:
+  - Added buttons vertical padding in the case of displaying buttons in two rows
+  - cleared buttons style so they look like other buttons from the theme
+
+
+SCSS for the Moodle Boost theme (tested on Moodle 4.4):
+
+[name="navbutton"] {
+    @extend .btn;
+    @extend .btn-primary;
+}
+
+.navbuttontext {
+  input[type="submit"].custom_activity_completion {
+    @extend .btn;
+    @extend .btn-primary;
+  }
+}
+
+.navbuttontext input[type="submit"] {
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+input[type="image"].custom_activity_completion {
+    width: 50px;
+    height: 50px;
+}
+
+#navbuttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+#navbuttons form,
+#navbuttons a {
+    float: none !important;
+    display: inline-block;
+    margin: 0;
+}
+
+#navbuttons .togglecompletion {
+    margin: 0 !important;
+}
+
+#navbuttons .togglecompletion > div {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+input[type="image"].custom_activity_completion {
+    width: 50px;
+    height: 50px;
+    display: block;
+}
+
+
+The following info is from the original developer:
+
+The block of the modified plugin was added to both test and production course templates
 
 This block adds navigation buttons (first/previous/next/etc.) to the bottom of each activity/resource page in a course.
 As an enhancement it also adds completion button ('Mark complete'/'Mark incomplete') to the bottom of each activity/resource page in a course.
