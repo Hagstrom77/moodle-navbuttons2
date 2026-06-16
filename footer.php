@@ -48,9 +48,18 @@ function draw_navbuttons() {
     if ($COURSE->id <= 1) {
         return $output . '<!-- Front page -->' . $outend;
     }
+
+
     if (!$settings = $DB->get_record('navbuttons', ['course' => $COURSE->id])) {
-        return $output . '<!-- No settings -->' . $outend;
+        $settings = new stdClass();
+        $settings->course = $COURSE->id;
+        $settings->enabled = 1;
+
+        $settings->id = $DB->insert_record('navbuttons', $settings);
+        $settings = $DB->get_record('navbuttons', ['id' => $settings->id]);
     }
+
+
     if (!$settings->enabled) {
         return $output . '<!-- Not enabled -->' . $outend;
     }
@@ -180,25 +189,6 @@ function draw_navbuttons() {
     }
 
     $output .= '<div id="navbuttons">';
-    if ($settings->homebuttonshow) {
-        $home = new stdClass();
-        if ($settings->homebuttontype == BLOCK_NAVBUTTONS_HOME_COURSE) {
-            $home->link = new moodle_url('/course/view.php', ['id' => $COURSE->id]);
-            $home->name = get_string('coursepage', 'block_navbuttons');
-        } else {
-            $home->link = $CFG->wwwroot;
-            $home->name = get_string('frontpage', 'block_navbuttons');
-        }
-        [$icon, $bgcolour] = navbutton_get_icon(
-            $settings->buttonstype,
-            'home',
-            $context,
-            BLOCK_NAVBUTTONS_HOMEICON,
-            $settings->backgroundcolour,
-            $settings->customusebackground
-        );
-        $output .= make_navbutton($icon, $bgcolour, $home->name, $home->link, "home");
-    }
 
     if ($settings->firstbuttonshow) {
         $first = new stdClass();
@@ -257,6 +247,27 @@ function draw_navbuttons() {
         }
         $output .= make_navbutton($icon, $bgcolour, $str, $prev->link, "prev");
     }
+
+    if ($settings->homebuttonshow) {
+        $home = new stdClass();
+        if ($settings->homebuttontype == BLOCK_NAVBUTTONS_HOME_COURSE) {
+            $home->link = new moodle_url('/course/view.php', ['id' => $COURSE->id]);
+            $home->name = get_string('coursepage', 'block_navbuttons');
+        } else {
+            $home->link = $CFG->wwwroot;
+            $home->name = get_string('frontpage', 'block_navbuttons');
+        }
+        [$icon, $bgcolour] = navbutton_get_icon(
+            $settings->buttonstype,
+            'home',
+            $context,
+            BLOCK_NAVBUTTONS_HOMEICON,
+            $settings->backgroundcolour,
+            $settings->customusebackground
+        );
+        $output .= make_navbutton($icon, $bgcolour, $home->name, $home->link, "home");
+    }
+
 
     if ($settings->nextbuttonshow && $next) {
         [$icon, $bgcolour] = navbutton_get_icon(
